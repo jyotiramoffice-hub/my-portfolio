@@ -1564,7 +1564,7 @@ img { max-width: 100%; }
   .hero { grid-template-columns: 1fr; padding: 100px 40px 80px; }
   .hero-visual { display: none; }
   .about-grid { grid-template-columns: 1fr; gap: 48px; }
-  .about-image-wrap { display: flex; justify-content: center; }
+  .about-img-container { display: flex; justify-content: center; }
   .skills-grid { grid-template-columns: repeat(2, 1fr); }
   .projects-grid { grid-template-columns: repeat(2, 1fr); }
   .contact-grid { grid-template-columns: 1fr; }
@@ -1596,10 +1596,17 @@ img { max-width: 100%; }
   .nav-cta { display: none; }
   .hamburger { display: flex; }
   .hero { padding: 100px 20px 60px; }
-  .hero-stats { gap: 20px; }
+  .hero-content { text-align: center; }
+  .hero-badge { margin: 0 auto 24px; }
+  .hero-actions { justify-content: center; }
+  .hero-stats { gap: 20px; justify-content: center; flex-wrap: wrap; }
   .skills-grid { grid-template-columns: 1fr; }
+  .skill-card { padding: 20px; }
   .projects-grid { grid-template-columns: 1fr; }
+  .timeline-content { padding: 20px; }
+  .edu-card { padding: 24px 20px; }
   .form-row { grid-template-columns: 1fr; }
+  .contact-form-wrap { padding: 24px; }
   .container { padding: 0 20px; }
   .section { padding: 70px 0; }
 }
