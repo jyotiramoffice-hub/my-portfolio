@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin – Contacts</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 2rem; }
+    h1 { color: #00d4ff; margin-bottom: 1.5rem; font-size: 1.8rem; }
+    #login { max-width: 360px; margin: 10vh auto; background: #1e293b; padding: 2rem; border-radius: 12px; }
+    #login input { width: 100%; padding: .8rem 1rem; margin: 1rem 0; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 1rem; }
+    #login button, .del-btn { background: #00d4ff; color: #0f172a; border: none; padding: .8rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 700; width: 100%; }
+    #dashboard { display: none; }
+    .stats { display: flex; gap: 1rem; margin-bottom: 2rem; }
+    .stat { background: #1e293b; padding: 1.2rem 2rem; border-radius: 10px; text-align: center; }
+    .stat span { display: block; font-size: 2rem; font-weight: 800; color: #00d4ff; }
+    table { width: 100%; border-collapse: collapse; background: #1e293b; border-radius: 12px; overflow: hidden; }
+    th { background: #00d4ff; color: #0f172a; padding: .9rem 1rem; text-align: left; }
+    td { padding: .85rem 1rem; border-bottom: 1px solid #334155; vertical-align: top; max-width: 250px; word-break: break-word; }
+    tr:hover td { background: #243249; }
+    .del-btn { width: auto; padding: .4rem .9rem; background: #ef4444; color: #fff; font-size: .85rem; border-radius: 6px; }
+    .empty { text-align: center; padding: 3rem; color: #64748b; }
+    #error { color: #ef4444; margin-top: .5rem; font-size: .9rem; }
+  </style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="login">
+  <h1>🔐 Admin Login</h1>
+  <input type="password" id="pwd" placeholder="Enter password" onkeydown="if(event.key==='Enter')login()" />
+  <button onclick="login()">Login</button>
+  <p id="error"></p>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard">
+  <h1>📋 Contact Submissions</h1>
+  <div class="stats">
+    <div class="stat"><span id="totalCount">0</span>Total Contacts</div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Subject</th>
+        <th>Message</th>
+        <th>Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<script>
+  const PASS = 'jyotiram123'; // 🔑 Change this password
+
+  function login() {
+    if (document.getElementById('pwd').value === PASS) {
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      loadContacts();
+    } else {
+      document.getElementById('error').textContent = 'Wrong password!';
+    }
+  }
+
+  async function loadContacts() {
+    try {
+      const res = await fetch('/api/contacts');
+      const data = await res.json();
+      document.getElementById('totalCount').textContent = data.length;
+      const tbody = document.getElementById('tbody');
+      if (!data.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty">No contacts yet 📭</td></tr>';
+        return;
+      }
+      tbody.innerHTML = data.map(c => `
+        <tr>
+          <td>${c.id}</td>
+          <td>${c.name}</td>
+          <td>${c.email}</td>
+          <td>${c.subject}</td>
+          <td>${c.message}</td>
+          <td>${new Date(c.created_at).toLocaleString('en-IN')}</td>
+          <td><button class="del-btn" onclick="deleteContact(${c.id})">🗑 Delete</button></td>
+        </tr>
+      `).join('');
+    } catch (err) {
+      console.error('Error loading contacts:', err);
+    }
+  }
+
+  async function deleteContact(id) {
+    if (!confirm('Delete this contact?')) return;
+    await fetch('/api/contacts/' + id, { method: 'DELETE' });
+    loadContacts();
+  }
+</script>
+</body>
+</html>
