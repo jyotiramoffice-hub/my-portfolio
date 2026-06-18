@@ -57,6 +57,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
+// Route to serve admin page without .html extension
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
 // Replication helper function: Syncs SQLite records (where synced = 0) to MySQL
 async function syncToMySQL() {
   console.log('🔄 Checking for unsynced contacts...');

@@ -1603,3 +1603,13 @@ img { max-width: 100%; }
   .container { padding: 0 20px; }
   .section { padding: 70px 0; }
 }
+
+/* ===== DISABLE CUSTOM CURSOR ON MOBILE/TOUCH DEVICES ===== */
+@media (hover: none) and (pointer: coarse) {
+  body {
+    cursor: auto !important;
+  }
+  .cursor, .cursor-follower {
+    display: none !important;
+  }
+}

@@ -3,9 +3,11 @@
    ============================================= */
 
 // ===== LOADING SCREEN =====
-window.addEventListener('load', () => {
+function startLoader() {
   const loader = document.getElementById('loader');
   const bar = document.getElementById('loaderBar');
+  if (!loader || !bar) return; // Fail-safe if elements don't exist
+
   const label = loader.querySelector('.loader-label');
   const steps = ['Compiling Java...', 'Injecting Spring Beans...', 'Launching Server...', 'Ready! 🚀'];
   let progress = 0;
@@ -17,18 +19,26 @@ window.addEventListener('load', () => {
     bar.style.width = progress + '%';
 
     if (progress > (stepIdx + 1) * 25 && stepIdx < steps.length - 1) {
-      label.textContent = steps[stepIdx++];
+      if (label) label.textContent = steps[stepIdx++];
     }
 
     if (progress === 100) {
-      label.textContent = steps[steps.length - 1];
+      if (label) label.textContent = steps[steps.length - 1];
       setTimeout(() => {
         loader.classList.add('hidden');
         initAnimations();
       }, 600);
     }
   }, 80);
-});
+}
+
+// Start loader immediately if page is already loaded, otherwise bind to load event
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  startLoader();
+} else {
+  window.addEventListener('load', startLoader);
+}
+
 
 // ===== CUSTOM CURSOR =====
 const cursor = document.getElementById('cursor');
