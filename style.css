@@ -206,6 +206,12 @@ img { max-width: 100%; }
   font-weight: 800;
   color: var(--primary);
   letter-spacing: -0.5px;
+  transition: text-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.nav-logo:hover {
+  text-shadow: 0 0 12px rgba(0, 212, 255, 0.7), 0 0 20px rgba(124, 58, 237, 0.4);
+  transform: scale(1.03);
 }
 
 .logo-bracket { color: var(--secondary); }
@@ -1582,17 +1588,56 @@ img { max-width: 100%; }
     top: 75px;
     left: 0;
     right: 0;
-    background: rgba(5,11,24,0.98);
-    backdrop-filter: blur(20px);
+    background: rgba(5, 11, 24, 0.94);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     border-bottom: 1px solid var(--border);
     flex-direction: column;
-    padding: 20px;
-    gap: 4px;
-    transform: translateY(-120%);
-    transition: transform 0.4s ease;
+    padding: 24px 30px;
+    gap: 0;
+    transform: translateY(-130%);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 999;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
   }
-  .nav-links.open { transform: translateY(0); }
+  .nav-links.open { 
+    transform: translateY(0); 
+  }
+  .nav-links li {
+    width: 100%;
+  }
+  .nav-link {
+    display: block;
+    padding: 14px 0;
+    font-size: 16px;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.08);
+  }
+  .nav-links li:last-child .nav-link {
+    border-bottom: none;
+  }
+  .nav-links.open .nav-link {
+    animation: slideInLink 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+  .nav-links.open li:nth-child(1) .nav-link { animation-delay: 0.05s; }
+  .nav-links.open li:nth-child(2) .nav-link { animation-delay: 0.1s; }
+  .nav-links.open li:nth-child(3) .nav-link { animation-delay: 0.15s; }
+  .nav-links.open li:nth-child(4) .nav-link { animation-delay: 0.2s; }
+  .nav-links.open li:nth-child(5) .nav-link { animation-delay: 0.25s; }
+  .nav-links.open li:nth-child(6) .nav-link { animation-delay: 0.3s; }
+  .nav-links.open li:nth-child(7) .nav-link { animation-delay: 0.35s; }
+
+  @keyframes slideInLink {
+    from {
+      opacity: 0;
+      transform: translateY(-15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .nav-cta { display: none; }
   .hamburger { display: flex; }
   .hero { padding: 100px 20px 60px; }
