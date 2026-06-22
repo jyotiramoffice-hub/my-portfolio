@@ -44,6 +44,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 const cursor = document.getElementById('cursor');
 const follower = document.getElementById('cursor-follower');
 let mouseX = 0, mouseY = 0, folX = 0, folY = 0;
+let targetX = null, targetY = null;
 
 document.addEventListener('mousemove', e => {
   mouseX = e.clientX;
@@ -53,22 +54,49 @@ document.addEventListener('mousemove', e => {
 });
 
 function animateCursor() {
-  folX += (mouseX - folX) * 0.12;
-  folY += (mouseY - folY) * 0.12;
+  if (targetX !== null && targetY !== null) {
+    // Magnetic pull
+    folX += (targetX - folX) * 0.18;
+    folY += (targetY - folY) * 0.18;
+  } else {
+    // Normal follower lag
+    folX += (mouseX - folX) * 0.12;
+    folY += (mouseY - folY) * 0.12;
+  }
   follower.style.left = folX + 'px';
   follower.style.top = folY + 'px';
   requestAnimationFrame(animateCursor);
 }
 animateCursor();
 
-document.querySelectorAll('a, button, .skill-tab, .filter-btn, .project-card').forEach(el => {
-  el.addEventListener('mouseenter', () => {
+document.querySelectorAll('a, button, .skill-tab, .filter-btn, .project-card, .skill-card, .edu-card, .social-btn').forEach(el => {
+  el.addEventListener('mouseenter', (e) => {
     cursor.classList.add('hover');
     follower.classList.add('hover');
+    
+    // Calculate magnet effect for button/tabs/cards
+    if (el.classList.contains('btn') || el.classList.contains('skill-tab') || el.classList.contains('filter-btn') || el.classList.contains('social-btn')) {
+      const rect = el.getBoundingClientRect();
+      targetX = rect.left + rect.width / 2;
+      targetY = rect.top + rect.height / 2;
+    }
   });
+  
+  el.addEventListener('mousemove', (e) => {
+    if (targetX !== null) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const midX = rect.left + rect.width / 2;
+      const midY = rect.top + rect.height / 2;
+      targetX = midX + (e.clientX - midX) * 0.35;
+      targetY = midY + (e.clientY - midY) * 0.35;
+    }
+  });
+
   el.addEventListener('mouseleave', () => {
     cursor.classList.remove('hover');
     follower.classList.remove('hover');
+    targetX = null;
+    targetY = null;
   });
 });
 
@@ -407,11 +435,39 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
+// ===== CARD SPOTLIGHT HOVER EFFECT =====
+function initSpotlightCards() {
+  const cards = document.querySelectorAll('.skill-card, .project-card, .edu-card');
+  cards.forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    });
+  });
+}
+
+// ===== SCROLL PROGRESS BAR =====
+function initScrollProgress() {
+  window.addEventListener('scroll', () => {
+    const progress = document.getElementById('scroll-progress');
+    if (progress) {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const percentage = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
+      progress.style.width = percentage + '%';
+    }
+  });
+}
+
 // ===== INIT ALL =====
 function initAnimations() {
   initAOS();
   animateCounters();
   codeGlitch();
+  initSpotlightCards();
+  initScrollProgress();
 }
 
 // ===== HERO CANVAS GLOW EFFECT =====
